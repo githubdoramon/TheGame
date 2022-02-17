@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Image, keyframes, Link, Text } from '@metafam/ds';
+import { Box, Grid, Heading, Image, keyframes, Link, Text } from '@metafam/ds';
 import QuestEngaged from 'assets/quests/quest-engaged.svg';
 import QuestGeneral from 'assets/quests/quest-general.svg';
 import QuestInitiation from 'assets/quests/quest-initiation.svg';
@@ -41,7 +41,7 @@ const QuestsDashboard: React.FC = () => (
       url="https://my.metagame.wtf/quests"
     />
     <Heading mb={8}>Quests</Heading>
-    <Flex dir="row">
+    <Grid templateColumns={['auto', 'auto', '1fr 1fr', '1fr 1fr 1fr']} gap={6}>
       {questCategories.map(
         ({ title, description, link, Icon, progress, completed, color }) => (
           <Card
@@ -50,7 +50,7 @@ const QuestsDashboard: React.FC = () => (
           />
         ),
       )}
-    </Flex>
+    </Grid>
   </PageContainer>
 );
 
@@ -90,9 +90,8 @@ const Card: React.FC<CardProps> = ({
       placeContent="center"
       p={8}
       m={2}
-      minH="3xs"
-      minW="sm"
       maxW="sm"
+      minH="3xs"
       w={['full', 'auto']}
       cursor="pointer"
       href={link}
