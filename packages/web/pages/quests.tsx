@@ -1,114 +1,147 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  LoadingState,
-  MetaButton,
-  Text,
-  Tooltip,
-  useToast,
-} from '@metafam/ds';
+import { Box, Flex, Heading, Image, keyframes, Link, Text } from '@metafam/ds';
+import QuestEngaged from 'assets/quests/quest-engaged.svg';
+import QuestGeneral from 'assets/quests/quest-general.svg';
+import QuestInitiation from 'assets/quests/quest-initiation.svg';
 import { PageContainer } from 'components/Container';
-import { QuestFilter } from 'components/Quest/QuestFilter';
-import { QuestList } from 'components/Quest/QuestList';
 import { HeadComponent } from 'components/Seo';
-import { getSsrClient } from 'graphql/client';
-import { getQuests } from 'graphql/getQuests';
-import { getPlayerRoles } from 'graphql/queries/enums/getRoles';
-import { usePSeedBalance } from 'lib/hooks/balances';
-import { useQuestFilter } from 'lib/hooks/quests';
-import { InferGetStaticPropsType } from 'next';
-import { useRouter } from 'next/router';
-import React, { useMemo } from 'react';
-import { isAllowedToCreateQuest } from 'utils/questHelpers';
+import React from 'react';
 
-type Props = InferGetStaticPropsType<typeof getStaticProps>;
+const questCategories = [
+  {
+    title: 'Initiation',
+    description: 'Understand the MetaGame',
+    link: '/quests/initiation',
+    Icon: QuestInitiation,
+    progress: 86,
+    color: '#e2e3a1',
+  },
+  {
+    title: 'Path of the Engaged',
+    description: 'Carve your path and become a Player',
+    link: '/quests/role',
+    Icon: QuestEngaged,
+    progress: 4,
+    color: '#AB7C94',
+  },
+  {
+    title: 'General',
+    description: 'Quests for all!',
+    link: '/quests/general',
+    Icon: QuestGeneral,
+    completed: 24,
+    color: '#8aade6',
+  },
+];
 
-export const getStaticProps = async () => {
-  const roleChoices = await getPlayerRoles();
-  const [ssrClient, ssrCache] = getSsrClient();
-  // This populates the cache server-side
-  await getQuests(undefined, ssrClient);
+const QuestsDashboard: React.FC = () => (
+  <PageContainer>
+    <HeadComponent
+      title="MetaGame Quests"
+      description="MetaGame is a Massive Online Coordination Game! MetaGame has some epic quests going on!"
+      url="https://my.metagame.wtf/quests"
+    />
+    <Heading mb={8}>Quests</Heading>
+    <Flex dir="row">
+      {questCategories.map(
+        ({ title, description, link, Icon, progress, completed, color }) => (
+          <Card
+            key={title}
+            {...{ title, description, link, Icon, progress, completed, color }}
+          />
+        ),
+      )}
+    </Flex>
+  </PageContainer>
+);
 
-  return {
-    props: {
-      urqlState: ssrCache.extractData(),
-      roleChoices,
-    },
-    revalidate: 1,
-  };
+type CardProps = {
+  title: string;
+  description: string;
+  link: string;
+  Icon: string;
+  progress?: number;
+  completed?: number;
+  color: string;
 };
 
-const QuestsPage: React.FC<Props> = ({ roleChoices }) => {
-  const router = useRouter();
-  const {
-    quests,
-    aggregates,
-    fetching,
-    error,
-    queryVariables,
-    setQueryVariable,
-  } = useQuestFilter();
-  const { pSeedBalance, fetching: fetchingBalance } = usePSeedBalance();
-  const toast = useToast();
-  const canCreateQuest = useMemo(() => isAllowedToCreateQuest(pSeedBalance), [
-    pSeedBalance,
-  ]);
+const Card: React.FC<CardProps> = ({
+  title,
+  description,
+  link,
+  Icon,
+  progress,
+  completed,
+  color,
+}) => {
+  const spin = keyframes`
+    from { width: 0; }
+    to { width: ${progress}%; }
+  `;
 
   return (
-    <PageContainer>
-      <HeadComponent
-        title="MetaGame Quests"
-        description="MetaGame is a Massive Online Coordination Game! MetaGame has some epic quests going on!"
-        url="https://my.metagame.wtf/quests"
-      />
-      <Box w="100%" maxW="80rem">
-        <HStack justify="space-between" w="100%">
-          <Heading>Quest Explorer</Heading>
-          <Tooltip
-            label={
-              !canCreateQuest &&
-              'You need to hold at least 100 pSEED to create a quest.'
-            }
+    <Link
+      display="flex"
+      direction="column"
+      borderRadius="lg"
+      borderWidth="1px"
+      textColor="white"
+      alignItems="center"
+      textAlign="center"
+      placeContent="center"
+      p={8}
+      m={2}
+      minH="3xs"
+      minW="sm"
+      maxW="sm"
+      w={['full', 'auto']}
+      cursor="pointer"
+      href={link}
+      sx={{
+        bgColor: '#110035',
+        borderColor: 'whiteAlpha.400',
+        transition: 'all 0.1s ease-in-out',
+        _hover: { bgColor: '#150042', borderColor: 'whiteAlpha.700' },
+      }}
+    >
+      <Box borderTopRadius="lg">
+        {completed && (
+          <Box>
+            <Text fontFamily="heading" textColor={color}>
+              Completed: {completed}
+            </Text>
+          </Box>
+        )}
+        {progress && (
+          <Box
+            background="rgba(255,255,255,0.1)"
+            justifyContent="flex-start"
+            borderRadius="100px"
+            alignItems="center"
+            position="relative"
+            padding="0 5px"
+            display="flex"
+            height={8}
           >
-            <MetaButton
-              // disabled={!canCreateQuest} // if disabled, tooltip doesn't show...
-              isLoading={fetchingBalance}
-              onClick={() => {
-                if (!canCreateQuest) {
-                  toast({
-                    title: 'Error',
-                    description:
-                      'Insufficient pSEED Balance. Must have ≥ 100pSEED.',
-                    status: 'error',
-                    isClosable: true,
-                  });
-                } else {
-                  router.push('/quest/create');
-                }
-              }}
-            >
-              New Quest
-            </MetaButton>
-          </Tooltip>
-        </HStack>
-        <Box mt={8} w="100%">
-          <QuestFilter
-            aggregates={aggregates}
-            queryVariables={queryVariables}
-            setQueryVariable={setQueryVariable}
-            quests={quests || []}
-            {...{ roleChoices }}
-          />
+            <Box
+              animation={`${spin} 3s normal forwards`}
+              boxShadow="0 10px 40px -10px #fff"
+              borderRadius="100px"
+              background={color}
+              height={6}
+              width="0"
+            ></Box>
+          </Box>
+        )}
+        <Text fontSize="xl" fontWeight="bold" mt={1} my={4}>
+          {title.toUpperCase()}
+        </Text>
+        <Box p={12}>
+          <Image src={Icon} fill="white" />
         </Box>
-        <Box mt={8} w="100%">
-          {fetching && <LoadingState />}
-          {error && <Text>{`Error: ${error.message}`}</Text>}
-          {quests && !fetching && <QuestList {...{ quests }} />}
-        </Box>
+        <Text mb={2}>{description}</Text>
       </Box>
-    </PageContainer>
+    </Link>
   );
 };
 
-export default QuestsPage;
+export default QuestsDashboard;
