@@ -18,7 +18,7 @@ const questCategories = [
   {
     title: 'Path of the Engaged',
     description: 'Carve your path and become a Player',
-    link: '/quests/role',
+    link: '/quests/path-of-the-engaged',
     Icon: QuestEngaged,
     progress: 4,
     color: '#AB7C94',
