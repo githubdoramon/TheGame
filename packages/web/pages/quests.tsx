@@ -1,35 +1,53 @@
 import { Box, Grid, Heading, Image, keyframes, Link, Text } from '@metafam/ds';
-import QuestEngaged from 'assets/quests/quest-engaged.svg';
-import QuestGeneral from 'assets/quests/quest-general.svg';
-import QuestInitiation from 'assets/quests/quest-initiation.svg';
+import Collab from 'assets/quests/quest-collab.svg';
+import Engaged from 'assets/quests/quest-engaged.svg';
+import General from 'assets/quests/quest-general.svg';
+import Initiation from 'assets/quests/quest-initiation.svg';
+import Web3 from 'assets/quests/quest-web3.svg';
 import { PageContainer } from 'components/Container';
 import { HeadComponent } from 'components/Seo';
 import React from 'react';
 
 const questCategories = [
   {
+    title: 'General',
+    description: 'Quests for all!',
+    link: '/quests/general',
+    Icon: General,
+    completed: 0,
+    color: '#8aade6',
+  },
+  {
     title: 'Initiation',
     description: 'Understand the MetaGame',
     link: '/quests/initiation',
-    Icon: QuestInitiation,
-    progress: 86,
+    Icon: Initiation,
+    progress: 1,
     color: '#e2e3a1',
   },
   {
     title: 'Path of the Engaged',
     description: 'Carve your path and become a Player',
     link: '/quests/path-of-the-engaged',
-    Icon: QuestEngaged,
-    progress: 4,
+    Icon: Engaged,
+    progress: 1,
     color: '#AB7C94',
   },
   {
-    title: 'General',
-    description: 'Quests for all!',
-    link: '/quests/general',
-    Icon: QuestGeneral,
-    completed: 24,
-    color: '#8aade6',
+    title: 'Meta Collab',
+    description: 'Collab one-on-one',
+    link: '/quests/meta-collab',
+    Icon: Collab,
+    progress: 1,
+    color: '#aaafe6',
+  },
+  {
+    title: 'Web 3 Onboarding',
+    description: 'Enter the world of Web3',
+    link: '/quests/web3',
+    Icon: Web3,
+    progress: 1,
+    color: '#1a56e6',
   },
 ];
 
@@ -41,7 +59,16 @@ const QuestsDashboard: React.FC = () => (
       url="https://my.metagame.wtf/quests"
     />
     <Heading mb={8}>Quests</Heading>
-    <Grid templateColumns={['auto', 'auto', '1fr 1fr', '1fr 1fr 1fr']} gap={6}>
+    <Grid
+      templateColumns={[
+        'auto',
+        'auto',
+        '1fr 1fr',
+        '1fr 1fr 1fr',
+        '1fr 1fr 1fr 1fr',
+      ]}
+      gap={6}
+    >
       {questCategories.map(
         ({ title, description, link, Icon, progress, completed, color }) => (
           <Card
@@ -103,7 +130,7 @@ const Card: React.FC<CardProps> = ({
       }}
     >
       <Box borderTopRadius="lg">
-        {completed && (
+        {typeof completed === 'number' && (
           <Box>
             <Text fontFamily="heading" textColor={color}>
               Completed: {completed}
