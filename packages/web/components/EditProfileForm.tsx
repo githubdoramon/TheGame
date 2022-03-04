@@ -184,9 +184,10 @@ export const EditProfileForm: React.FC<ProfileEditorProps> = ({
   const { ceramic, address, chainId } = useWeb3();
   const toast = useToast();
   const description = watch('description');
-  const remaining = useMemo(() => MAX_DESC_LEN - (description?.length ?? 0), [
-    description,
-  ]);
+  const remaining = useMemo(
+    () => MAX_DESC_LEN - (description?.length ?? 0),
+    [description],
+  );
 
   const fields = Object.fromEntries(
     Object.keys(AllProfileFields).map((key) => {
@@ -448,7 +449,7 @@ export const EditProfileForm: React.FC<ProfileEditorProps> = ({
       </MetaHeading>
       <Wrap>
         <WrapItem flex={1} px={5}>
-          <FormControl isInvalid={errors.profileImageURL} align="center">
+          <FormControl isInvalid={errors.profileImageURL} alignItems="center">
             <Tooltip label="An image representing the user generally cropped to a circle for display. 1MiB maximum size.">
               <Label htmlFor="profileImageURL" userSelect="none">
                 Profile Image
@@ -535,7 +536,7 @@ export const EditProfileForm: React.FC<ProfileEditorProps> = ({
           },
         ].map(({ key, title, description: spec }) => (
           <WrapItem flex={1} px={5} {...{ key }}>
-            <FormControl isInvalid={errors[key]} align="center">
+            <FormControl isInvalid={errors[key]} alignItems="center">
               <Tooltip label={spec}>
                 <Label htmlFor={key} userSelect="none" whiteSpace="nowrap">
                   {title}
@@ -762,9 +763,7 @@ export const EditProfileForm: React.FC<ProfileEditorProps> = ({
               render={({ field: { onChange, ref, ...props } }) => (
                 <SelectTimeZone
                   labelStyle="abbrev"
-                  onChange={(tz) => {
-                    onChange(tz.value);
-                  }}
+                  onChange={onChange}
                   {...props}
                 />
               )}

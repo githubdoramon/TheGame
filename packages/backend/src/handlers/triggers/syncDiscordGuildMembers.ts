@@ -69,8 +69,14 @@ const syncGuildMembers = async (guild: GuildFragment) => {
     return;
 
   // at least one membership role must be defined
+<<<<<<< HEAD
   const discordServerMembershipRoles = (guildMetadata.discordMetadata as GuildDiscordMetadata)
     .membershipRoleIds;
+=======
+  const discordServerMembershipRoles = (
+    guildMetadata.discord_metadata as GuildDiscordMetadata
+  ).membershipRoleIds;
+>>>>>>> 50ba2e6b (feat: upgraded dependencies)
   if (
     discordServerMembershipRoles == null ||
     discordServerMembershipRoles?.length === 0

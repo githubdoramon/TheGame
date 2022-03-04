@@ -55,7 +55,7 @@ export const SetupDone: React.FC = () => {
           </MetaButton>
           <MetaButton
             as="a"
-            href="//my.metagame.wtf/players"
+            href="/community/players"
             px={20}
             py={8}
             mt={{

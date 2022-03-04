@@ -141,9 +141,8 @@ export const SetupColorDisposition: React.FC<MaybeModalProps> = ({
 }) => {
   const field = 'colorMask';
 
-  const [types, setTypes] = useState<Maybe<Record<number, PersonalityOption>>>(
-    null,
-  );
+  const [types, setTypes] =
+    useState<Maybe<Record<number, PersonalityOption>>>(null);
 
   useEffect(() => {
     const load = async () => {

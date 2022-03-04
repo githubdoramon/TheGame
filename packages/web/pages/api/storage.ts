@@ -1,4 +1,4 @@
-import Busboy, { BusboyHeaders } from 'busboy';
+import Busboy, { FileInfo } from 'busboy';
 import { CONFIG } from 'config';
 import * as fs from 'fs';
 import { mkdtemp, rmdir, unlink } from 'fs/promises';
@@ -16,12 +16,13 @@ export const handler: (
   res: NextApiResponse<Record<string, string>>,
 ) => {
   const storage = new Web3Storage({ token: CONFIG.web3StorageToken });
-  const busboy = new Busboy({ headers: req.headers as BusboyHeaders });
+  const busboy = Busboy({ headers: req.headers });
   const files: { field: string; name: string }[] = [];
 
   busboy.on(
     'file',
-    async (fieldname: string, file: Readable, filename: string) => {
+    async (fieldname: string, file: Readable, info: FileInfo) => {
+      const { filename } = info;
       console.log({ fieldname, filename }); // eslint-disable-line no-console
 
       const ext = filename.replace(/^.*\./, '');
@@ -44,7 +45,7 @@ export const handler: (
       const tmpFiles = files.map(({ name }) => ({
         name: path.basename(name),
         stream: () =>
-          (fs.createReadStream(name) as unknown) as ReadableStream<string>,
+          fs.createReadStream(name) as unknown as ReadableStream<string>,
       }));
       const cid = await storage.put(tmpFiles);
       console.log({ cid, files, tmpFiles }); // eslint-disable-line no-console
