@@ -10,17 +10,8 @@ import React from 'react';
 
 const questCategories = [
   {
-    title: 'General',
-    description: 'Quests for all!',
-    link: '/quests/general',
-    Icon: General,
-    completed: 0,
-    color: '#8aade6',
-    comingSoon: false,
-  },
-  {
     title: 'Initiation',
-    description: 'Understand the MetaGame',
+    description: 'The gates are open. \r\nCome Inside...',
     link: '/quests/initiation',
     Icon: Initiation,
     progress: 1,
@@ -28,8 +19,19 @@ const questCategories = [
     comingSoon: false,
   },
   {
+    title: 'General',
+    description:
+      'The road leads to the open sea. Set sail for your own adventures.',
+    link: '/quests/general',
+    Icon: General,
+    completed: 0,
+    color: '#8aade6',
+    comingSoon: false,
+  },
+  {
     title: 'Path of the Engaged',
-    description: 'Carve your path and become a Player',
+    description:
+      'The gates lead to a road. Walk it to the end and your efforts will be rewarded.',
     link: '/quests/path-of-the-engaged',
     Icon: Engaged,
     progress: 1,
@@ -38,7 +40,7 @@ const questCategories = [
   },
   {
     title: 'Meta Collab',
-    description: 'Collab one-on-one',
+    description: 'Join forces with fellow warriors against Moloch.',
     link: '/quests/meta-collab',
     Icon: Collab,
     progress: 1,
@@ -47,7 +49,7 @@ const questCategories = [
   },
   {
     title: 'Web 3 Onboarding',
-    description: 'Enter the world of Web3',
+    description: 'Take back the internet by learning powerful new weapons!',
     link: '/quests/web3',
     Icon: Web3,
     progress: 1,
