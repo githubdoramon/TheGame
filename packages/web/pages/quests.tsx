@@ -16,6 +16,7 @@ const questCategories = [
     Icon: General,
     completed: 0,
     color: '#8aade6',
+    comingSoon: false,
   },
   {
     title: 'Initiation',
@@ -24,6 +25,7 @@ const questCategories = [
     Icon: Initiation,
     progress: 1,
     color: '#e2e3a1',
+    comingSoon: false,
   },
   {
     title: 'Path of the Engaged',
@@ -32,6 +34,7 @@ const questCategories = [
     Icon: Engaged,
     progress: 1,
     color: '#AB7C94',
+    comingSoon: true,
   },
   {
     title: 'Meta Collab',
@@ -40,6 +43,7 @@ const questCategories = [
     Icon: Collab,
     progress: 1,
     color: '#aaafe6',
+    comingSoon: true,
   },
   {
     title: 'Web 3 Onboarding',
@@ -48,6 +52,7 @@ const questCategories = [
     Icon: Web3,
     progress: 1,
     color: '#1a56e6',
+    comingSoon: true,
   },
 ];
 
@@ -68,12 +73,31 @@ const QuestsDashboard: React.FC = () => (
         '1fr 1fr 1fr 1fr',
       ]}
       gap={6}
+      pb={10}
     >
       {questCategories.map(
-        ({ title, description, link, Icon, progress, completed, color }) => (
+        ({
+          title,
+          description,
+          link,
+          Icon,
+          progress,
+          completed,
+          color,
+          comingSoon,
+        }) => (
           <Card
             key={title}
-            {...{ title, description, link, Icon, progress, completed, color }}
+            {...{
+              title,
+              description,
+              link,
+              Icon,
+              progress,
+              completed,
+              color,
+              comingSoon,
+            }}
           />
         ),
       )}
@@ -89,6 +113,7 @@ type CardProps = {
   progress?: number;
   completed?: number;
   color: string;
+  comingSoon: boolean;
 };
 
 const Card: React.FC<CardProps> = ({
@@ -99,6 +124,7 @@ const Card: React.FC<CardProps> = ({
   progress,
   completed,
   color,
+  comingSoon,
 }) => {
   const spin = keyframes`
     from { width: 0; }
@@ -115,13 +141,12 @@ const Card: React.FC<CardProps> = ({
       alignItems="center"
       textAlign="center"
       placeContent="center"
-      p={8}
-      m={2}
       maxW="sm"
       minH="3xs"
       w={['full', 'auto']}
-      cursor="pointer"
-      href={link}
+      pointerEvents={comingSoon ? 'none' : 'auto'}
+      cursor={comingSoon ? 'default' : 'pointer'}
+      href={comingSoon ? '' : link}
       sx={{
         bgColor: '#110035',
         borderColor: 'whiteAlpha.400',
@@ -129,7 +154,33 @@ const Card: React.FC<CardProps> = ({
         _hover: { bgColor: '#150042', borderColor: 'whiteAlpha.700' },
       }}
     >
-      <Box borderTopRadius="lg">
+      {comingSoon && (
+        <Box position="absolute" zIndex={2}>
+          <Heading fontSize="lg">COMING SOON</Heading>
+        </Box>
+      )}
+      <Box
+        borderRadius="lg"
+        position="relative"
+        p={8}
+        sx={{
+          '&::after': comingSoon
+            ? {
+                content: '" "',
+                position: 'absolute',
+                zIndex: 1,
+                borderRadius: 6,
+                display: 'block',
+                height: 'full',
+                width: 'full',
+                top: 0,
+                left: 0,
+                right: 0,
+                background: 'rgba(63, 68, 94, 0.7)',
+              }
+            : {},
+        }}
+      >
         {typeof completed === 'number' && (
           <Box>
             <Text fontFamily="heading" textColor={color}>
