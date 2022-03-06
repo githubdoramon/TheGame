@@ -11,7 +11,7 @@ import React from 'react';
 const questCategories = [
   {
     title: 'Initiation',
-    description: 'The gates are open. \r\nCome Inside...',
+    description: 'The gates are open. Come Inside...',
     link: '/quests/initiation',
     Icon: Initiation,
     progress: 1,
