@@ -533,6 +533,7 @@ jobs:
         with:
           step: finish
           token: ${{github.token}}
+          env: ${{env.DEPLOYMENT_ENV}}
           env_url: ${{needs.env.outputs.FRONTEND_URL}}
           status: ${{env.result == 'skipped' && 'cancelled' || env.result}}
           deployment_id: ${{needs.start-deployment.outputs.deployment_id}}
