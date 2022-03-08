@@ -183,7 +183,11 @@ export const GuildForm: React.FC<Props> = ({
     mode: 'onTouched',
   });
 
-  const { fields: daoFields, append, remove } = useFieldArray({
+  const {
+    fields: daoFields,
+    append,
+    remove,
+  } = useFieldArray({
     control,
     name: 'daos',
   });
@@ -401,9 +405,11 @@ export const GuildForm: React.FC<Props> = ({
                     <Field
                       label="Address"
                       error={
-                        (errors.daos as {
-                          contractAddress?: FieldError | undefined;
-                        }[])?.[index]?.contractAddress
+                        (
+                          errors.daos as {
+                            contractAddress?: FieldError | undefined;
+                          }[]
+                        )?.[index]?.contractAddress
                       }
                     >
                       <Input

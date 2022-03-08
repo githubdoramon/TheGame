@@ -29,7 +29,7 @@ type Props = InferGetStaticPropsType<typeof getStaticProps>;
 const GuildPage: React.FC<Props> = ({ guild }) => {
   const router = useRouter();
   const { user, fetching } = useUser();
-  const [getGuildsResult, getGuilds] = useGetAdministeredGuildsQuery();
+  const [getGuildsResult, getGuilds] = useGetAdministeredGuildsQuery({});
 
   useEffect(() => {
     if (!fetching && user) {
