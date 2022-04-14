@@ -1480,6 +1480,9 @@ type guild {
     where: dao_bool_exp
   ): dao_aggregate!
   description: String
+
+  """Remote relationship field"""
+  discordAnnouncements: [String!]
   discordId: String
   discordInviteUrl: String
   githubUrl: String
@@ -4111,7 +4114,7 @@ type mutation_root {
   """
   perform the action: "updateIDXProfile"
   """
-  updateIDXProfile(playerId: uuid): uuid!
+  updateIDXProfile(playerId: uuid): CacheProcessOutput
 
   """
   perform the action: "updateQuestCompletion"
@@ -7276,6 +7279,7 @@ type Query {
   getBrightIdStatus(contextId: uuid): BrightIdStatus
   getDaoHausMemberships(memberAddress: String): [Member!]!
   getDiscordServerMemberRoles(guildId: uuid!, playerId: uuid!): [DiscordRole!]!
+  getGuildDiscordAnnouncements(guildDiscordId: String): [String!]
   getGuildDiscordRoles(guildDiscordId: String): [DiscordRole!]!
   getTokenBalances(address: String): TokenBalances
   getTopPSeedHolders(limit: Int): [TokenBalances!]
@@ -7889,6 +7893,7 @@ type query_root {
   getBrightIdStatus(contextId: uuid): BrightIdStatus
   getDaoHausMemberships(memberAddress: String): [Member!]!
   getDiscordServerMemberRoles(guildId: uuid!, playerId: uuid!): [DiscordRole!]!
+  getGuildDiscordAnnouncements(guildDiscordId: String): [String!]
   getGuildDiscordRoles(guildDiscordId: String): [DiscordRole!]!
   getTokenBalances(address: String): TokenBalances
   getTopPSeedHolders(limit: Int): [TokenBalances!]
@@ -8490,16 +8495,6 @@ type query_root {
 
   """fetch data from the table: "skill" using primary key columns"""
   skill_by_pk(id: uuid!): skill
-
-  """
-  retrieve the result of action: "updateIDXProfile"
-  """
-  updateIDXProfile(
-    """
-    id of the action: "updateIDXProfile"
-    """
-    id: uuid!
-  ): updateIDXProfile
 }
 
 """
@@ -12107,16 +12102,6 @@ type subscription_root {
 
   """fetch data from the table: "skill" using primary key columns"""
   skill_by_pk(id: uuid!): skill
-
-  """
-  retrieve the result of action: "updateIDXProfile"
-  """
-  updateIDXProfile(
-    """
-    id of the action: "updateIDXProfile"
-    """
-    id: uuid!
-  ): updateIDXProfile
 }
 
 scalar timestamptz
@@ -12140,23 +12125,6 @@ type TokenBalances {
   id: ID!
   pSeedBalance: String!
   seedBalance: String!
-}
-
-"""
-fields of action: "updateIDXProfile"
-"""
-type updateIDXProfile {
-  """the time at which this action was created"""
-  created_at: timestamptz
-
-  """errors related to the invocation"""
-  errors: json
-
-  """the unique id of an action"""
-  id: uuid
-
-  """the output fields of this action"""
-  output: CacheProcessOutput
 }
 
 type UpdateIDXProfileResponse {

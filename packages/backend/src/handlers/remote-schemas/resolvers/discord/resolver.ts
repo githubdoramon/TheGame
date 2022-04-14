@@ -1,4 +1,6 @@
 import { createDiscordClient } from '@metafam/discord-bot';
+import { GuildChannel, TextChannel } from 'discord.js';
+import { Converter } from 'showdown';
 
 import { client } from '../../../../lib/hasuraClient';
 import { QueryResolvers } from '../../autogen/types';
@@ -57,5 +59,60 @@ export const getDiscordServerMemberRoles: QueryResolvers['getDiscordServerMember
     }));
   }
 
+  return [];
+};
+
+export const getGuildDiscordAnnouncements: QueryResolvers['getGuildDiscordAnnouncements'] = async (
+  _,
+  { guildDiscordId },
+) => {
+  if (!guildDiscordId) return [];
+
+  try {
+    const discordClient = await createDiscordClient();
+    const discordGuild = await discordClient.guilds.fetch(guildDiscordId);
+    await discordGuild.members.fetch();
+    const viewChannelPerm = discordGuild.me?.hasPermission('VIEW_CHANNEL');
+    if (!viewChannelPerm) {
+      console.warn(
+        `Guild (id=${guildDiscordId}) does not have the VIEW_CHANNEL permission, skipping announcement fetching...`,
+      );
+    }
+    if (discordGuild != null) {
+      const newsChannels = discordGuild.channels.cache.filter(
+        (channel: GuildChannel) => channel.type === 'news',
+      );
+
+      if (newsChannels.size > 0) {
+        const announcementChannelMessages = await Promise.all(
+          newsChannels.map(async (channel) => {
+            const messages = await (channel as TextChannel).messages.fetch();
+            if (messages == null) {
+              return [];
+            }
+            return messages
+              .sorted((m1, m2) => m2.createdTimestamp - m1.createdTimestamp)
+              .first(10);
+          }),
+        );
+
+        const combinedMessages = announcementChannelMessages.reduce(
+          (allMessages, channelMessages) => allMessages.concat(channelMessages),
+          [],
+        );
+        combinedMessages.sort(
+          (m1, m2) => m2.createdTimestamp - m1.createdTimestamp,
+        );
+
+        const markdownConverter = new Converter({ simpleLineBreaks: true });
+
+        return combinedMessages
+          .slice(0, 10)
+          .map((message) => markdownConverter.makeHtml(message.cleanContent));
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
   return [];
 };
